@@ -110,7 +110,7 @@ function Weather() {
 
   return (
     <>
-      <div className="place-self-center w-1/3 h-3/4 p-10 rounded-xl bg-gradient-to-tr from-blue-800 via-blue-500 to-purple-400 flex flex-col items-center">
+      <div className="place-self-center w-[95%] sm:w-[80%] lg:w-1/3 min-h-3/4 h-fit p-10 pb-10 rounded-xl bg-gradient-to-tr from-blue-800 via-blue-500 to-purple-400 flex flex-col items-center">
         <div className="flex items-center gap-4">
           <input
             ref={inputRef}
@@ -119,37 +119,41 @@ function Weather() {
             placeholder="Search"
           />
           <img
-            className="w-12 px-4 py-3 rounded-2xl bg-white cursor-pointer"
+            className="sm:w-12 w-9 px-4 py-3 rounded-2xl bg-white cursor-pointer"
             onClick={() => search(inputRef.current.value)}
             src={searchIcon}
             alt="search"
           />
         </div>
-        <p className="text-white text-7xl mt-4 font-semibold">
+        <p className="text-white text-4xl sm:text-7xl mt-4 font-semibold">
           {weatherData.city}
         </p>
         {/* conditional rendering */}
         {weatherData.icon ? (
           <>
             <img
-              className="w-150 my-9"
+              className="sm:w-150 w-[100px] bg-cover my-9"
               src={weatherData.icon}
               alt="clear weather"
             />
           </>
         ) : (
           <>
-            <img className="w-150 my-9" src={allIcon[1]} alt="enter city" />
-            <h1 className="text-white text-3xl mt-4 font-semibold">
+            <img
+              className="sm:w-150 w-[100px] bg-cover my-9"
+              src={allIcon[1]}
+              alt="enter city"
+            />
+            <h1 className="text-white text:2xl sm:text-3xl mt-4 font-semibold">
               Search city
             </h1>
           </>
         )}
-        <h2 className="text-white text-7xl font-bold">
+        <h2 className="text-white text-4xl sm:text-7xl font-bold">
           {weatherData.temperature && `${weatherData.temperature}°C`}
         </h2>
 
-        <h4 className="text-white text-2xl mt-4 font-semibold">
+        <h4 className="text-white text-xl sm:text-2xl mt-4 font-semibold">
           {weatherData.weather}
         </h4>
         <div className="text-white w-full mt-10 flex justify-between">
