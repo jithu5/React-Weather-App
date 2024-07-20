@@ -45,6 +45,7 @@ import axios from 'axios'
 
 function Weather() {
     const [weatherData, setWeatherData] = useState({})
+    const [fetchError, setFetchError] = useState(null)
     const inputRef = useRef()
 
      const allIcon = {
@@ -91,22 +92,30 @@ function Weather() {
           import.meta.env.VITE_API_KEY
         }`;
         const response = await axios.get(url);
-        const data = response.data;
-        const icons = allIcon[data.current.icon_num] 
-       setWeatherData({
-         city,
-         precipitations: data.current.precipitation.type,
-         windSpeed: data.current.wind.speed,
-         temperature: data.current.temperature,
-         icon: icons,
-         weather: data.current.summary,
-       });
-       console.log(weatherData.temperature);
+        if (response.status >= 200 && response.status < 300) {
+          const data = response.data;
+          const icons = allIcon[data.current.icon_num];
+          setWeatherData({
+            city,
+            precipitations: data.current.precipitation.type,
+            windSpeed: data.current.wind.speed,
+            temperature: data.current.temperature,
+            icon: icons,
+            weather: data.current.summary,
+          });
+          setFetchError(null); // Clear any previous errors
+        } else {
+          throw new Error("API error with status code: " + response.status);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Fetch error: ", error.message);
+        setFetchError(
+          `${error.message} : Error fetching weather data. Please try again later, check your API.`
+        );
+        // Re-throw the error
+        throw error;
       }
     };
-
 
   return (
     <>
@@ -128,8 +137,10 @@ function Weather() {
         <p className="text-white text-4xl sm:text-7xl mt-4 font-semibold">
           {weatherData.city}
         </p>
+
         {/* conditional rendering */}
-        {weatherData.icon ? (
+
+        {weatherData.icon && !fetchError ? (
           <>
             <img
               className="sm:w-150 w-[100px] bg-cover my-9"
@@ -144,9 +155,15 @@ function Weather() {
               src={allIcon[1]}
               alt="enter city"
             />
-            <h1 className="text-white text:2xl sm:text-3xl mt-4 font-semibold">
-              Search city
-            </h1>
+            {!fetchError ? (
+              <h1 className="text-white text:2xl sm:text-3xl mt-4 font-semibold">
+                Search city
+              </h1>
+            ) : (
+              <h2 className="text-center text:xl sm:text-2xl mt-4 font-black text-white">
+                {fetchError}
+              </h2>
+            )}
           </>
         )}
         <h2 className="text-white text-4xl sm:text-7xl font-bold">
